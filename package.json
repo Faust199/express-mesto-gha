@@ -1,0 +1,12 @@
+{
+  "name": "express-mesto-gha",
+  "author": "Nikita Polezhaev",
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  },
+  "scripts": {
+    "lint": "npx eslint"
+  }
+}
