@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
-class CustomErrors extends Error {
+class ValidationError extends Error {
   constructor(message) {
     super(message);
     this.name = 'validationError';
@@ -24,8 +24,8 @@ class DefaultError extends Error {
 }
 
 const handleError = (err) => {
-  if (err.name === 'ValidationError') {
-    const validationError = new CustomErrors(err.message);
+  if (err.name === 'ValidationError' || 'CastError') {
+    const validationError = new ValidationError(err.message);
     return validationError;
   }
 

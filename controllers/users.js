@@ -5,6 +5,8 @@ module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ users }))
     .catch((err) => {
+      console.log(err.name);
+      console.log(err.message);
       const error = handleError(err);
       res.status(error.statusCode).send({ message: error.message });
     });
@@ -12,8 +14,16 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send({ user }))
+    .then((user) => {
+      if (user) {
+        res.send({ user });
+      } else {
+        res.status(404).send({ message: 'Пользователь с таким id не найден' });
+      }
+    })
     .catch((err) => {
+      console.log(err.name);
+      console.log(err.message);
       const error = handleError(err);
       res.status(error.statusCode).send({ message: error.message });
     });
