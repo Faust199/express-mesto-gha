@@ -24,6 +24,11 @@ app.use((req, res, next) => {
 app.use(USER_PATH, require('./routes/users'));
 app.use(CARD_PATH, require('./routes/cards'));
 
+app.use((req, res, next) => {
+  res.status(404).send({ message: 'такой путь не найден' });
+  next();
+});
+
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
