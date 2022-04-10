@@ -5,8 +5,6 @@ module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ users }))
     .catch((err) => {
-      console.log(err.name);
-      console.log(err.message);
       const error = handleError(err);
       res.status(error.statusCode).send({ message: error.message });
     });
@@ -22,8 +20,6 @@ module.exports.getUserById = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err.name);
-      console.log(err.message);
       const error = handleError(err);
       res.status(error.statusCode).send({ message: error.message });
     });
