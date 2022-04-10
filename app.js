@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const USER_PATH = '/users';
+const CARD_PATH = '/cards';
 
 const { PORT = 3000 } = process.env;
 
@@ -15,13 +16,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '6251c5ff4ebdff41b9b2e775', // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '6251c5ff4ebdff41b9b2e775',
   };
-
   next();
 });
 
 app.use(USER_PATH, require('./routes/users'));
+app.use(CARD_PATH, require('./routes/cards'));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
