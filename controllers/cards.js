@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const handleError = require('../errors/customErrors');
 
 const CARD_OWNER = 'owner';
+const ERROR_CODE = 404;
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -29,7 +30,7 @@ module.exports.deleteCard = (req, res) => {
       if (result.deletedCount > 0) {
         res.send({ message: `Карточка с id:${req.params.cardId} удалена` });
       } else {
-        res.status(404).send({ message: 'Карточки с таким id не существует.' });
+        res.status(ERROR_CODE).send({ message: 'Карточки с таким id не существует.' });
       }
     })
     .catch((err) => {
@@ -56,7 +57,7 @@ module.exports.likeCard = (req, res) => {
       if (card) {
         res.send({ card });
       } else {
-        res.status(404).send({ message: 'Карточки с таким id не существует.' });
+        res.status(ERROR_CODE).send({ message: 'Карточки с таким id не существует.' });
       }
     })
     .catch((err) => {
@@ -73,7 +74,7 @@ module.exports.dislikeCard = (req, res) => {
       if (card) {
         res.send({ card });
       } else {
-        res.status(404).send({ message: 'Карточки с таким id не существует.' });
+        res.status(ERROR_CODE).send({ message: 'Карточки с таким id не существует.' });
       }
     })
     .catch((err) => {

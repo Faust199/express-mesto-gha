@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const handleError = require('../errors/customErrors');
 
+const ERROR_CODE = 404;
+
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ users }))
@@ -16,7 +18,7 @@ module.exports.getUserById = (req, res) => {
       if (user) {
         res.send({ user });
       } else {
-        res.status(404).send({ message: 'Пользователь с таким id не найден' });
+        res.status(ERROR_CODE).send({ message: 'Пользователь с таким id не найден' });
       }
     })
     .catch((err) => {
