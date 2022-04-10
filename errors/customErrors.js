@@ -1,19 +1,5 @@
-// eslint-disable-next-line max-classes-per-file
-class ValidationError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'validationError';
-    this.statusCode = 400;
-  }
-}
-
-class DefaultError extends Error {
-  constructor(message = 'Что то пошло не так') {
-    super(message);
-    this.name = 'defaultError';
-    this.statusCode = 500;
-  }
-}
+const ValidationError = require('./validationError');
+const DefaultError = require('./defaultError');
 
 const handleError = (err) => {
   if (err.name === 'ValidationError' || 'CastError') {

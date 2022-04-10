@@ -39,7 +39,6 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUserProfile = (req, res) => {
   const { name, about } = req.body;
-  console.log(about);
   User.findByIdAndUpdate({ _id: req.user._id }, { name, about }, { runValidators: true, new: true })
     .then((user) => res.send({ user }))
     .catch((err) => {
