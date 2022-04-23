@@ -81,7 +81,7 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   const { NODE_ENV, JWT_SECRET } = process.env;
   User.findUserByCredentials(email, password)
@@ -96,7 +96,7 @@ module.exports.login = (req, res) => {
         .send({ token });
     })
     .catch((err) => {
-      throw new UserError(err.message);
+      next(new UserError(err.message));
     });
 };
 

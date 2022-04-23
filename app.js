@@ -7,7 +7,7 @@ const { errors, celebrate, Joi } = require('celebrate');
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
 const ObjectNotExistError = require('./errors/objectNotExistError');
-const ErrorHandler = require('./errors/errorHandler');
+const errorHandler = require('./errors/errorHandler');
 
 const USER_PATH = '/users';
 const CARD_PATH = '/cards';
@@ -58,7 +58,7 @@ app.use(() => {
   throw new ObjectNotExistError('такой url не найден');
 });
 
-app.use(ErrorHandler);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
