@@ -57,7 +57,12 @@ module.exports.createUser = (req, res) => {
       about,
       avatar,
     }))
-    .then((user) => res.send({ user }))
+    .then((userTemp) => {
+      User.findById(userTemp.id)
+        .then((user) => {
+          res.send({ user });
+        });
+    })
     .catch((err) => {
       const error = handleError(err);
       res.status(error.statusCode).send({ message: error.message });

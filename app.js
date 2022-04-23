@@ -17,8 +17,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(errors());
-
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -27,8 +25,11 @@ app.post('/signin', celebrate({
 }), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required(),
+    email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
+    about: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30),
+    avatar: Joi.string().uri(),
   }),
 }), createUser);
 
@@ -36,6 +37,8 @@ app.use(auth);
 
 app.use(USER_PATH, require('./routes/users'));
 app.use(CARD_PATH, require('./routes/cards'));
+
+app.use(errors());
 
 app.use((req, res) => {
   res.status(404).send({ message: 'такой путь не найден' });
