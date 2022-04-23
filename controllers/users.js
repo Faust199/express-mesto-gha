@@ -5,6 +5,7 @@ const User = require('../models/user');
 const ValidationError = require('../errors/validationError');
 const ObjectNotExistError = require('../errors/objectNotExistError');
 const UserError = require('../errors/userError');
+const DataBaseError = require('../errors/dataBaseError');
 
 function errorHandler(err, next) {
   if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -69,6 +70,9 @@ module.exports.createUser = (req, res, next) => {
         });
     })
     .catch((err) => {
+      if (err.code === 11000) {
+        next(new DataBaseError(err.message));
+      }
       errorHandler(err, next);
     });
 };
