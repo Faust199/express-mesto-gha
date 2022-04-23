@@ -4,8 +4,7 @@ require('dotenv').config();
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
-  console.log(req.cookies.authorization);
-  const token = req.cookies.authorization;
+  const token = req.cookies.Authorization;
   let payload;
   const { NODE_ENV, JWT_SECRET } = process.env;
 
