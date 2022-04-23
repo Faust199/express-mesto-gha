@@ -1,63 +1,75 @@
 const Card = require('../models/card');
-const handleError = require('../errors/customErrors');
+const ValidationError = require('../errors/validationError');
+const RoleError = require('../errors/roleError');
+const ObjectNotExistError = require('../errors/objectNotExistError');
 
 const CARD_OWNER = 'owner';
-const ERROR_CODE = 404;
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate(CARD_OWNER)
     .then((cards) => res.send({ cards }))
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.getCardById = (req, res) => {
+module.exports.getCardById = (req, res, next) => {
   Card.findById(req.params.cardId)
     .populate(CARD_OWNER)
     .then((card) => res.send({ card }))
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .populate(CARD_OWNER)
     .then((card) => {
       if (card) {
-        if (card.owner.id === req.user._id) {
-          Card.deleteOne({ _id: req.params.cardId })
+        if (card.owner.equals(req.user._id)) {
+          return Card.deleteOne({ _id: req.params.cardId })
             .then(() => {
               res.send({ message: `Карточка с id:${req.params.cardId} удалена` });
             });
-        } else {
-          res.status(403).send({ message: 'У вас нет прав на удаление карточки.' });
         }
+        throw new RoleError('У вас нет прав на удаление карточки.');
       } else {
-        res.status(ERROR_CODE).send({ message: 'Карточки с таким id не существует.' });
+        throw new ObjectNotExistError('Карточки с таким id не существует.');
       }
     })
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ card }))
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   // eslint-disable-next-line max-len
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { runValidators: true, new: true })
     .populate(CARD_OWNER)
@@ -65,16 +77,19 @@ module.exports.likeCard = (req, res) => {
       if (card) {
         res.send({ card });
       } else {
-        res.status(ERROR_CODE).send({ message: 'Карточки с таким id не существует.' });
+        throw new ObjectNotExistError('Карточки с таким id не существует.');
       }
     })
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   // eslint-disable-next-line max-len
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { runValidators: true, new: true })
     .populate(CARD_OWNER)
@@ -82,11 +97,14 @@ module.exports.dislikeCard = (req, res) => {
       if (card) {
         res.send({ card });
       } else {
-        res.status(ERROR_CODE).send({ message: 'Карточки с таким id не существует.' });
+        throw new ObjectNotExistError('Карточки с таким id не существует.');
       }
     })
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };

@@ -2,50 +2,59 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const User = require('../models/user');
-const handleError = require('../errors/customErrors');
+const ValidationError = require('../errors/validationError');
+const ObjectNotExistError = require('../errors/objectNotExistError');
+const UserError = require('../errors/userError');
 
-const ERROR_CODE = 404;
-
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ users }))
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.getUserInfo = (req, res) => {
+module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.send({ user });
       } else {
-        res.status(ERROR_CODE).send({ message: 'Пользователь не найден' });
+        throw new ObjectNotExistError('Пользователь с таким id не найден.');
       }
     })
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
         res.send({ user });
       } else {
-        res.status(ERROR_CODE).send({ message: 'Пользователь с таким id не найден' });
+        throw new ObjectNotExistError('Пользователь с таким id не найден.');
       }
     })
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -64,8 +73,11 @@ module.exports.createUser = (req, res) => {
         });
     })
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -84,28 +96,32 @@ module.exports.login = (req, res) => {
         .send({ token });
     })
     .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
+      throw new UserError(err.message);
     });
 };
 
-module.exports.updateUserProfile = (req, res) => {
+module.exports.updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate({ _id: req.user._id }, { name, about }, { runValidators: true, new: true })
     .then((user) => res.send({ user }))
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate({ _id: req.user._id }, { avatar }, { runValidators: true, new: true })
     .then((user) => res.send({ user }))
     .catch((err) => {
-      const error = handleError(err);
-      res.status(error.statusCode).send({ message: error.message });
+      if (err.name === 'ValidationError' || 'CastError') {
+        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      } else {
+        next(err);
+      }
     });
 };
