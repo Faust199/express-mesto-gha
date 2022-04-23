@@ -1,4 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
+Joi.objectId = require('joi-objectid')(Joi);
 const router = require('express').Router();
 
 const {
@@ -9,7 +10,7 @@ router.get('/', getUsers);
 router.get('/me', getUserInfo);
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().required(),
+    userId: Joi.objectId().required(),
   }),
 }), getUserById);
 router.patch('/me', celebrate({
@@ -20,7 +21,7 @@ router.patch('/me', celebrate({
 }), updateUserProfile);
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().uri(),
+    avatar: Joi.string().regex(/(http|https):\/\/([\w.]+\/?)\S*/i).required(),
   }),
 }), updateUserAvatar);
 
