@@ -6,15 +6,19 @@ const ValidationError = require('../errors/validationError');
 const ObjectNotExistError = require('../errors/objectNotExistError');
 const UserError = require('../errors/userError');
 
+function errorHandler(err, next) {
+  if (err.name === 'ValidationError' || err.name === 'CastError') {
+    next(new ValidationError(err.message));
+  } else {
+    next(err);
+  }
+}
+
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ users }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -28,11 +32,7 @@ module.exports.getUserInfo = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -46,11 +46,7 @@ module.exports.getUserById = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -73,11 +69,7 @@ module.exports.createUser = (req, res, next) => {
         });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -105,11 +97,7 @@ module.exports.updateUserProfile = (req, res, next) => {
   User.findByIdAndUpdate({ _id: req.user._id }, { name, about }, { runValidators: true, new: true })
     .then((user) => res.send({ user }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -118,10 +106,6 @@ module.exports.updateUserAvatar = (req, res, next) => {
   User.findByIdAndUpdate({ _id: req.user._id }, { avatar }, { runValidators: true, new: true })
     .then((user) => res.send({ user }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };

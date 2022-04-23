@@ -5,16 +5,20 @@ const ObjectNotExistError = require('../errors/objectNotExistError');
 
 const CARD_OWNER = 'owner';
 
+function errorHandler(err, next) {
+  if (err.name === 'ValidationError' || err.name === 'CastError') {
+    next(new ValidationError(err.message));
+  } else {
+    next(err);
+  }
+}
+
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate(CARD_OWNER)
     .then((cards) => res.send({ cards }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -23,11 +27,7 @@ module.exports.getCardById = (req, res, next) => {
     .populate(CARD_OWNER)
     .then((card) => res.send({ card }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -48,11 +48,7 @@ module.exports.deleteCard = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -61,11 +57,7 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ card }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -81,11 +73,7 @@ module.exports.likeCard = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
 
@@ -101,10 +89,6 @@ module.exports.dislikeCard = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(err.message));
-      } else {
-        next(err);
-      }
+      errorHandler(err, next);
     });
 };
