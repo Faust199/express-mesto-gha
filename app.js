@@ -17,6 +17,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(errors());
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -34,8 +36,6 @@ app.use(auth);
 
 app.use(USER_PATH, require('./routes/users'));
 app.use(CARD_PATH, require('./routes/cards'));
-
-app.use(errors());
 
 app.use((req, res) => {
   res.status(404).send({ message: 'такой путь не найден' });
