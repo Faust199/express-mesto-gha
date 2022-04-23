@@ -11,7 +11,7 @@ module.exports.getUsers = (req, res, next) => {
     .then((users) => res.send({ users }))
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -29,7 +29,7 @@ module.exports.getUserInfo = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -47,7 +47,7 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -74,7 +74,7 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -106,7 +106,7 @@ module.exports.updateUserProfile = (req, res, next) => {
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -119,7 +119,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }

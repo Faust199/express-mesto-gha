@@ -11,7 +11,7 @@ module.exports.getCards = (req, res, next) => {
     .then((cards) => res.send({ cards }))
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -24,7 +24,7 @@ module.exports.getCardById = (req, res, next) => {
     .then((card) => res.send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -49,7 +49,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -62,7 +62,7 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -82,7 +82,7 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
@@ -102,7 +102,7 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || 'CastError') {
-        next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        next(new ValidationError(err.message));
       } else {
         next(err);
       }
