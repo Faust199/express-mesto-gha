@@ -28,17 +28,17 @@ module.exports.deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .populate(CARD_OWNER)
     .then((card) => {
-      if (card.owner.id === req.user._id) {
-        Card.deleteOne({ _id: req.params.cardId })
-          .then((result) => {
-            if (result.deletedCount > 0) {
+      if (card) {
+        if (card.owner.id === req.user._id) {
+          Card.deleteOne({ _id: req.params.cardId })
+            .then(() => {
               res.send({ message: `Карточка с id:${req.params.cardId} удалена` });
-            } else {
-              res.status(ERROR_CODE).send({ message: 'Карточки с таким id не существует.' });
-            }
-          });
+            });
+        } else {
+          res.status(403).send({ message: 'У вас нет прав на удаление карточки.' });
+        }
       } else {
-        res.status(ERROR_CODE).send({ message: 'У вас нет прав на удаление карточки.' });
+        res.status(ERROR_CODE).send({ message: 'Карточки с таким id не существует.' });
       }
     })
     .catch((err) => {
