@@ -15,6 +15,21 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
+module.exports.getUserInfo = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) {
+        res.send({ user });
+      } else {
+        res.status(ERROR_CODE).send({ message: 'Пользователь не найден' });
+      }
+    })
+    .catch((err) => {
+      const error = handleError(err);
+      res.status(error.statusCode).send({ message: error.message });
+    });
+};
+
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
@@ -52,7 +67,6 @@ module.exports.createUser = (req, res) => {
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
   const { NODE_ENV, JWT_SECRET } = process.env;
-
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
