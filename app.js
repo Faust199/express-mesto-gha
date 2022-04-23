@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { createUser, login } = require('./controllers/users');
 
 const USER_PATH = '/users';
 const CARD_PATH = '/cards';
@@ -23,6 +24,9 @@ app.use((req, res, next) => {
 
 app.use(USER_PATH, require('./routes/users'));
 app.use(CARD_PATH, require('./routes/cards'));
+
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'такой путь не найден' });
