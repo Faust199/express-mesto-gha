@@ -24,9 +24,11 @@ const allowedCors = [
   'http://praktikum.tk',
   'https://polnikita.students.nomoredomains.xyz',
   'http://polnikita.students.nomoredomains.xyz',
-  'localhost:3000',
+  'http://localhost:3000',
+  'http://localhost:3001',
 ];
 
+// eslint-disable-next-line consistent-return
 app.use((req, res, next) => {
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
   // проверяем, что источник запроса есть среди разрешённых
@@ -91,17 +93,13 @@ app.use(auth);
 app.use(USER_PATH, require('./routes/users'));
 app.use(CARD_PATH, require('./routes/cards'));
 
+app.use(() => {
+  throw new ObjectNotExistError('такой url не найден');
+});
+
 app.use(errorLogger);
 
 app.use(errors());
-
-app.use(() => {
-  throw new ObjectNotExistError('такой url не найден');
-});
-
-app.use(() => {
-  throw new ObjectNotExistError('такой url не найден');
-});
 
 app.use(errorHandler);
 
